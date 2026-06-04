@@ -1,0 +1,230 @@
+[
+  {
+    "id": "barbell_bench_press",
+    "name": "Barbell Bench Press",
+    "primary_muscle": "Chest",
+    "vector": [1.0, 0.0, 0.0, 0.0, 0.4, 0.3]
+  },
+  {
+    "id": "dumbbell_bench_press",
+    "name": "Dumbbell Bench Press",
+    "primary_muscle": "Chest",
+    "vector": [0.95, 0.0, 0.0, 0.0, 0.4, 0.35]
+  },
+  {
+    "id": "incline_barbell_press",
+    "name": "Incline Barbell Press",
+    "primary_muscle": "Chest",
+    "vector": [0.85, 0.0, 0.0, 0.0, 0.65, 0.35]
+  },
+  {
+    "id": "incline_dumbbell_press",
+    "name": "Incline Dumbbell Press",
+    "primary_muscle": "Chest",
+    "vector": [0.85, 0.0, 0.0, 0.0, 0.6, 0.3]
+  },
+  {
+    "id": "decline_barbell_press",
+    "name": "Decline Barbell Press",
+    "primary_muscle": "Chest",
+    "vector": [0.95, 0.0, 0.0, 0.0, 0.2, 0.3]
+  },
+  {
+    "id": "chest_press_machine",
+    "name": "Chest Press Machine",
+    "primary_muscle": "Chest",
+    "vector": [0.9, 0.0, 0.0, 0.0, 0.3, 0.25]
+  },
+  {
+    "id": "dumbbell_chest_fly",
+    "name": "Dumbbell Chest Fly",
+    "primary_muscle": "Chest",
+    "vector": [0.85, 0.0, 0.0, 0.0, 0.2, 0.0]
+  },
+  {
+    "id": "cable_crossover",
+    "name": "Cable Crossover",
+    "primary_muscle": "Chest",
+    "vector": [0.9, 0.0, 0.0, 0.0, 0.25, 0.0]
+  },
+  {
+    "id": "push_up",
+    "name": "Push Up",
+    "primary_muscle": "Chest",
+    "vector": [0.8, 0.1, 0.0, 0.0, 0.35, 0.25]
+  },
+  {
+    "id": "chest_dip",
+    "name": "Chest Dip",
+    "primary_muscle": "Chest",
+    "vector": [0.85, 0.0, 0.0, 0.0, 0.4, 0.5]
+  },
+  {
+    "id": "pull_up",
+    "name": "Pull Up",
+    "primary_muscle": "Back",
+    "vector": [0.0, 0.95, 0.0, 0.0, 0.2, 0.45]
+  },
+  {
+    "id": "chin_up",
+    "name": "Chin Up",
+    "primary_muscle": "Back",
+    "vector": [0.0, 0.85, 0.0, 0.0, 0.15, 0.65]
+  },
+  {
+    "id": "lat_pulldown",
+    "name": "Lat Pulldown",
+    "primary_muscle": "Back",
+    "vector": [0.0, 1.0, 0.0, 0.0, 0.2, 0.4]
+  },
+  {
+    "id": "barbell_row",
+    "name": "Barbell Row",
+    "primary_muscle": "Back",
+    "vector": [0.0, 0.95, 0.1, 0.2, 0.3, 0.4]
+  },
+  {
+    "id": "dumbbell_row",
+    "name": "Dumbbell Row",
+    "primary_muscle": "Back",
+    "vector": [0.0, 0.9, 0.0, 0.0, 0.2, 0.4]
+  },
+  {
+    "id": "seated_cable_row",
+    "name": "Seated Cable Row",
+    "primary_muscle": "Back",
+    "vector": [0.0, 0.9, 0.0, 0.0, 0.3, 0.4]
+  },
+  {
+    "id": "t_bar_row",
+    "name": "T-Bar Row",
+    "primary_muscle": "Back",
+    "vector": [0.0, 0.95, 0.0, 0.1, 0.25, 0.35]
+  },
+  {
+    "id": "barbell_deadlift",
+    "name": "Barbell Deadlift",
+    "primary_muscle": "Hamstrings",
+    "vector": [0.0, 0.8, 0.3, 0.9, 0.2, 0.1]
+  },
+  {
+    "id": "barbell_squat",
+    "name": "Barbell Squat",
+    "primary_muscle": "Quads",
+    "vector": [0.0, 0.1, 1.0, 0.7, 0.0, 0.0]
+  },
+  {
+    "id": "barbell_front_squat",
+    "name": "Barbell Front Squat",
+    "primary_muscle": "Quads",
+    "vector": [0.0, 0.2, 0.95, 0.4, 0.1, 0.0]
+  },
+  {
+    "id": "leg_press",
+    "name": "Leg Press",
+    "primary_muscle": "Quads",
+    "vector": [0.0, 0.0, 0.9, 0.6, 0.0, 0.0]
+  },
+  {
+    "id": "smith_machine_squat",
+    "name": "Smith Machine Squat",
+    "primary_muscle": "Quads",
+    "vector": [0.0, 0.0, 0.85, 0.65, 0.0, 0.0]
+  },
+  {
+    "id": "hack_squat_machine",
+    "name": "Hack Squat Machine",
+    "primary_muscle": "Quads",
+    "vector": [0.0, 0.0, 0.95, 0.5, 0.0, 0.0]
+  },
+  {
+    "id": "bulgarian_split_squat",
+    "name": "Bulgarian Split Squat",
+    "primary_muscle": "Quads",
+    "vector": [0.0, 0.0, 0.85, 0.75, 0.0, 0.0]
+  },
+  {
+    "id": "leg_extension",
+    "name": "Leg Extension",
+    "primary_muscle": "Quads",
+    "vector": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+  },
+  {
+    "id": "romanian_deadlift",
+    "name": "Romanian Deadlift",
+    "primary_muscle": "Hamstrings",
+    "vector": [0.0, 0.4, 0.1, 1.0, 0.0, 0.0]
+  },
+  {
+    "id": "lying_leg_curl",
+    "name": "Lying Leg Curl",
+    "primary_muscle": "Hamstrings",
+    "vector": [0.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+  },
+  {
+    "id": "seated_leg_curl",
+    "name": "Seated Leg Curl",
+    "primary_muscle": "Hamstrings",
+    "vector": [0.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+  },
+  {
+    "id": "barbell_hip_thrust",
+    "name": "Barbell Hip Thrust",
+    "primary_muscle": "Glutes",
+    "vector": [0.0, 0.0, 0.2, 1.0, 0.0, 0.0]
+  },
+  {
+    "id": "overhead_barbell_press",
+    "name": "Overhead Barbell Press",
+    "primary_muscle": "Shoulders",
+    "vector": [0.2, 0.0, 0.0, 0.0, 1.0, 0.4]
+  },
+  {
+    "id": "seated_dumbbell_press",
+    "name": "Seated Dumbbell Press",
+    "primary_muscle": "Shoulders",
+    "vector": [0.1, 0.0, 0.0, 0.0, 0.95, 0.35]
+  },
+  {
+    "id": "shoulder_press_machine",
+    "name": "Shoulder Press Machine",
+    "primary_muscle": "Shoulders",
+    "vector": [0.1, 0.0, 0.0, 0.0, 0.9, 0.3]
+  },
+  {
+    "id": "dumbbell_lateral_raise",
+    "name": "Dumbbell Lateral Raise",
+    "primary_muscle": "Shoulders",
+    "vector": [0.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+  },
+  {
+    "id": "barbell_bicep_curl",
+    "name": "Barbell Bicep Curl",
+    "primary_muscle": "Arms",
+    "vector": [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+  },
+  {
+    "id": "dumbbell_hammer_curl",
+    "name": "Dumbbell Hammer Curl",
+    "primary_muscle": "Arms",
+    "vector": [0.0, 0.0, 0.0, 0.0, 0.1, 0.95]
+  },
+  {
+    "id": "cable_bicep_curl",
+    "name": "Cable Bicep Curl",
+    "primary_muscle": "Arms",
+    "vector": [0.0, 0.0, 0.0, 0.0, 0.0, 0.9]
+  },
+  {
+    "id": "tricep_rope_pushdown",
+    "name": "Tricep Rope Pushdown",
+    "primary_muscle": "Arms",
+    "vector": [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+  },
+  {
+    "id": "close_grip_bench_press",
+    "name": "Close Grip Bench Press",
+    "primary_muscle": "Arms",
+    "vector": [0.6, 0.0, 0.0, 0.0, 0.3, 0.8]
+  }
+]
