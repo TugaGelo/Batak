@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:batak/core/ai/ai_swapper_service.dart';
 import 'package:batak/core/loop/loop_engine.dart';
+import 'package:batak/ui/workout_floor.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,7 +105,7 @@ class _BatakShellState extends ConsumerState<BatakShell> {
           ref.read(bottomNavIndexProvider.notifier).state = index;
         },
         children: const [
-          WorkoutFloorPlaceholder(),
+          WorkoutFloorScreen(),
           RoutinePlaceholder(),
           AnalyticsPlaceholder(),
         ],
