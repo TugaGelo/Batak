@@ -1,8 +1,12 @@
+// Location: C:\Development\batak\lib\ui\routine\routine_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/loop/loop_engine.dart';
 import '../../core/database/app_database.dart';
-import 'routine_node_card.dart';
+import 'routine_node_card.dart'; // Updated path based on file tree
+import '../shell/app_shell.dart';
+import 'routine_composer.dart'; 
 
 final routineDataProvider = FutureProvider.autoDispose((ref) async {
   final engine = ref.watch(loopEngineProvider);
@@ -22,8 +26,14 @@ class RoutineScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ---------------------------------------------------------
+    // TEMPORARY HIJACK: Force the Composer to show for testing
+    // ---------------------------------------------------------
+    return const RoutineComposer();
+
+    /* 
+    // --- ORIGINAL TIMELINE CODE (COMMENTED OUT FOR NOW) ---
     final routineDataAsync = ref.watch(routineDataProvider);
-    
     final screenWidth = MediaQuery.of(context).size.width;
     final horizontalPadding = (screenWidth / 2) - 112; 
 
@@ -93,7 +103,9 @@ class RoutineScreen extends ConsumerWidget {
                                 dayNumber: template.sequenceOrder,
                                 templateName: template.name,
                                 status: status,
-                                onBegin: () {},
+                                onBegin: () {
+                                  ref.read(bottomNavIndexProvider.notifier).state = 0;
+                                },
                               ),
                             );
                           },
@@ -131,5 +143,6 @@ class RoutineScreen extends ConsumerWidget {
         },
       ),
     );
+    */
   }
 }
