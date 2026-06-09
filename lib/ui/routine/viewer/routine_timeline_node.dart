@@ -21,7 +21,6 @@ class RoutineTimelineNode extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Styling states
     final iconColor = isCurrent ? const Color(0xFFE1C19F) : const Color(0xFFCAC6BB);
     final circleBorder = isCurrent ? const Color(0xFFE1C19F) : const Color(0xFF49473F);
     final circleBg = isCurrent ? const Color(0xFF5B452B) : const Color(0xFF131313);

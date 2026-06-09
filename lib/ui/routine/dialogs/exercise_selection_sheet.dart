@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
-import 'exercise_sheet_row.dart'; // Import our new component
+import 'exercise_sheet_row.dart'; 
 
 final availableExercisesProvider = FutureProvider.autoDispose<List<Exercise>>((ref) async {
   final db = ref.read(databaseProvider);
@@ -35,7 +35,7 @@ class _ExerciseSelectionSheetState extends ConsumerState<ExerciseSelectionSheet>
     final exercisesAsync = ref.watch(availableExercisesProvider);
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.85, 
+      height: MediaQuery.of(context).size.height * 0.60, 
       decoration: const BoxDecoration(
         color: Color(0xFF131313),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -90,8 +90,7 @@ class _ExerciseSelectionSheetState extends ConsumerState<ExerciseSelectionSheet>
                     return ExerciseSheetRow(
                       exercise: ex,
                       onTap: () {
-                        widget.onSelect(ex);
-                        Navigator.pop(context);
+                        widget.onSelect(ex); 
                       },
                     );
                   },
