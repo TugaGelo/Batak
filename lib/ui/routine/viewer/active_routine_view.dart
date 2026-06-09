@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/loop/loop_engine.dart';
+import '../../../core/state/workout_state.dart';
 import '../routine_screen.dart';
 import 'routine_timeline_node.dart';
 import '../dialogs/routine_library_sheet.dart';
@@ -77,6 +78,7 @@ class _ActiveRoutineViewState extends ConsumerState<ActiveRoutineView> {
                     onPressed: widget.templates.isEmpty ? null : () async {
                       await ref.read(loopEngineProvider).completeTodaySequence(widget.routine);
                       ref.invalidate(routineDataProvider);
+                      ref.invalidate(workoutSessionLoaderProvider);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFE1DCC9),
