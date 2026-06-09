@@ -2,11 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/loop/loop_engine.dart';
+import '../../core/loop/loop_engine.dart' hide databaseProvider;
 import '../../core/database/app_database.dart';
-import 'routine_node_card.dart'; // Updated path based on file tree
+import 'routine_node_card.dart';
 import '../shell/app_shell.dart';
-import 'routine_composer.dart'; 
+import 'routine_composer.dart';
+
+final isComposingProvider = StateProvider<bool>((ref) => false);
 
 final routineDataProvider = FutureProvider.autoDispose((ref) async {
   final engine = ref.watch(loopEngineProvider);
@@ -26,25 +28,25 @@ class RoutineScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ---------------------------------------------------------
-    // TEMPORARY HIJACK: Force the Composer to show for testing
-    // ---------------------------------------------------------
-    return const RoutineComposer();
+    final isComposing = ref.watch(isComposingProvider);
 
-    /* 
-    // --- ORIGINAL TIMELINE CODE (COMMENTED OUT FOR NOW) ---
+    if (isComposing) {
+      return const RoutineComposer();
+    }
+
     final routineDataAsync = ref.watch(routineDataProvider);
     final screenWidth = MediaQuery.of(context).size.width;
-    final horizontalPadding = (screenWidth / 2) - 112; 
+    final horizontalPadding = (screenWidth / 2) - 112;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: routineDataAsync.when(
         loading: () => const Center(child: CircularProgressIndicator(color: Color(0xFFE1C19F))),
-        error: (err, stack) => Center(child: Text('Database Error: $err', style: const TextStyle(color: Colors.redAccent, fontSize: 18))),
+        error: (err, stack) => Center(child: Text('Database Error: $err', style: const TextStyle(color: Colors.redAccent))),
         data: (data) {
           if (data == null) {
-            return const Center(child: Text("⚠️ No Active Routine Found", style: TextStyle(color: Color(0xFFE1C19F))));
+            Future.microtask(() => ref.read(isComposingProvider.notifier).state = true);
+            return const Center(child: CircularProgressIndicator(color: Color(0xFFE1C19F)));
           }
 
           final Routine routine = data['routine'] as Routine;
@@ -55,13 +57,22 @@ class RoutineScreen extends ConsumerWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 24, bottom: 24),
-                child: Center(
-                  child: Text(
-                    "Active Sequence Tracker",
-                    style: TextStyle(color: Color(0xFFFEF8E5), fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 24, bottom: 24, left: 24, right: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Active Sequence",
+                      style: TextStyle(color: Color(0xFFFEF8E5), fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add_box_outlined, color: Color(0xFFCAC6BB)),
+                      onPressed: () {
+                        ref.read(isComposingProvider.notifier).state = true;
+                      },
+                    )
+                  ],
                 ),
               ),
 
@@ -143,6 +154,5 @@ class RoutineScreen extends ConsumerWidget {
         },
       ),
     );
-    */
   }
 }

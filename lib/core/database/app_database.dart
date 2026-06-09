@@ -1,13 +1,15 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'app_database.g.dart';
 
 class Routines extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
-  
-  IntColumn get currentSequenceIndex => integer().withDefault(const Constant(1))();
+
+  IntColumn get currentSequenceIndex =>
+      integer().withDefault(const Constant(1))();
 }
 
 class WorkoutTemplates extends Table {
@@ -39,7 +41,8 @@ class SetLogs extends Table {
 }
 
 class WorkoutExercises extends Table {
-  IntColumn get workoutTemplateId => integer().references(WorkoutTemplates, #id)();
+  IntColumn get workoutTemplateId =>
+      integer().references(WorkoutTemplates, #id)();
   IntColumn get exerciseId => integer().references(Exercises, #id)();
   IntColumn get displayOrder => integer()();
 
@@ -60,3 +63,7 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 }
+
+final databaseProvider = Provider<AppDatabase>((ref) {
+  return AppDatabase();
+});
