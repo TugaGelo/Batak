@@ -1,11 +1,9 @@
-// Location: C:\Development\batak\lib\ui\routine\widgets\composer_action_footer.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 import '../../../core/database/app_database.dart';
 import '../routine_screen.dart';
-import '../routine_composer.dart';
+import '../routine_composer.dart'; 
 
 class ComposerActionFooter extends ConsumerWidget {
   final String routineName;
@@ -27,39 +25,43 @@ class ComposerActionFooter extends ConsumerWidget {
       ),
       child: ElevatedButton(
         onPressed: () async {
-          final db = ref.read(databaseProvider);
-
+          final db = ref.read(databaseProvider); 
+          
+          await db.delete(db.workoutExercises).go();
           await db.delete(db.workoutTemplates).go();
           await db.delete(db.routines).go();
 
-          final newRoutineId = await db
-              .into(db.routines)
-              .insert(
-                RoutinesCompanion.insert(
-                  name: routineName.trim().isEmpty
-                      ? "Custom Split"
-                      : routineName.trim(),
-                  currentSequenceIndex: const drift.Value(1),
-                ),
-              );
+          final newRoutineId = await db.into(db.routines).insert(
+            RoutinesCompanion.insert(
+              name: routineName.trim().isEmpty ? "Custom Split" : routineName.trim(),
+              currentSequenceIndex: const drift.Value(1), 
+            ),
+          );
 
           for (int i = 0; i < draftDays.length; i++) {
             final draft = draftDays[i];
-            await db
-                .into(db.workoutTemplates)
-                .insert(
-                  WorkoutTemplatesCompanion.insert(
-                    routineId: newRoutineId,
-                    name: draft.title.trim().isEmpty
-                        ? "Day ${i + 1}"
-                        : draft.title.trim(),
-                    sequenceOrder: i + 1,
-                  ),
+            
+            final templateId = await db.into(db.workoutTemplates).insert(
+              WorkoutTemplatesCompanion.insert(
+                routineId: newRoutineId,
+                name: draft.title.trim().isEmpty ? "Day ${i+1}" : draft.title.trim(),
+                sequenceOrder: i + 1,
+              ),
+            );
+
+            for (int j = 0; j < draft.exercises.length; j++) {
+                final exercise = draft.exercises[j];
+                await db.into(db.workoutExercises).insert(
+                    WorkoutExercisesCompanion.insert(
+                        workoutTemplateId: templateId,
+                        exerciseId: exercise.id,
+                        displayOrder: j + 1,
+                    ),
                 );
+            }
           }
 
           ref.invalidate(routineDataProvider);
-
           ref.read(isComposingProvider.notifier).state = false;
         },
         style: ElevatedButton.styleFrom(
