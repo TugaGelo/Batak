@@ -36,7 +36,10 @@ class EmptyRoutineView extends ConsumerWidget {
           ),
           const SizedBox(height: 32),
           OutlinedButton.icon(
-            onPressed: () => ref.read(isComposingProvider.notifier).state = true, // Opens Composer manually
+            onPressed: () {
+              ref.read(editingRoutineTargetProvider.notifier).state = null; 
+              ref.read(isComposingProvider.notifier).state = true; 
+            },
             icon: const Icon(Icons.add, color: Color(0xFFE1C19F)),
             label: const Text("BUILD NEW PROFILE", style: TextStyle(color: Color(0xFFE1C19F), fontWeight: FontWeight.bold, letterSpacing: 1)),
             style: OutlinedButton.styleFrom(

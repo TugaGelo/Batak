@@ -7,9 +7,7 @@ part 'app_database.g.dart';
 class Routines extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
-
-  IntColumn get currentSequenceIndex =>
-      integer().withDefault(const Constant(1))();
+  IntColumn get currentSequenceIndex => integer().withDefault(const Constant(1))();
 }
 
 class WorkoutTemplates extends Table {
@@ -22,27 +20,30 @@ class WorkoutTemplates extends Table {
 class Exercises extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
-  
   TextColumn get stickyNote => text().nullable()();
-  
   TextColumn get vectorId => text()(); 
+}
+
+class WorkoutSessions extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get templateId => integer().references(WorkoutTemplates, #id)(); 
+  DateTimeColumn get startTime => dateTime()(); 
+  DateTimeColumn get endTime => dateTime().nullable()(); 
+  RealColumn get volumeGenerated => real().nullable()(); 
 }
 
 class SetLogs extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get exerciseId => integer().references(Exercises, #id)();
-  
+  IntColumn get sessionId => integer().nullable().references(WorkoutSessions, #id)();
   RealColumn get weight => real()();
   IntColumn get reps => integer()();
-  
   TextColumn get setTag => text().withDefault(const Constant('N'))();
-  
   DateTimeColumn get timestamp => dateTime()();
 }
 
 class WorkoutExercises extends Table {
-  IntColumn get workoutTemplateId =>
-      integer().references(WorkoutTemplates, #id)();
+  IntColumn get workoutTemplateId => integer().references(WorkoutTemplates, #id)();
   IntColumn get exerciseId => integer().references(Exercises, #id)();
   IntColumn get displayOrder => integer()();
 
@@ -54,6 +55,7 @@ class WorkoutExercises extends Table {
   Routines,
   WorkoutTemplates,
   Exercises,
+  WorkoutSessions,
   SetLogs,
   WorkoutExercises,
 ])
@@ -61,7 +63,22 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'batak_db'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          await m.createTable(workoutSessions);
+          await m.addColumn(setLogs, setLogs.sessionId);
+        }
+      },
+    );
+  }
 }
 
 final databaseProvider = Provider<AppDatabase>((ref) {

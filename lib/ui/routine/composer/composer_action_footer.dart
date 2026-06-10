@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 import '../../../core/database/app_database.dart';
+import '../../../core/state/workout_state.dart';
 import '../routine_screen.dart';
 import 'routine_composer.dart'; 
 
@@ -73,6 +74,9 @@ class ComposerActionFooter extends ConsumerWidget {
 
           ref.read(selectedRoutineIdProvider.notifier).state = routineId;
           ref.invalidate(routineDataProvider);
+          
+          ref.invalidate(workoutSessionLoaderProvider);
+          
           ref.read(isComposingProvider.notifier).state = false;
         },
         style: ElevatedButton.styleFrom(

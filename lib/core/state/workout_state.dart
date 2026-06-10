@@ -31,13 +31,21 @@ class ExerciseSession {
 
 class ActiveSessionState {
   final List<ExerciseSession> exercises; 
-  ActiveSessionState({required this.exercises});
-  ActiveSessionState copyWith({List<ExerciseSession>? exercises}) => ActiveSessionState(exercises: exercises ?? this.exercises);
+  final bool isRestMode; 
+
+  ActiveSessionState({required this.exercises, this.isRestMode = false});
+  
+  ActiveSessionState copyWith({List<ExerciseSession>? exercises, bool? isRestMode}) => 
+    ActiveSessionState(exercises: exercises ?? this.exercises, isRestMode: isRestMode ?? this.isRestMode);
 }
 
 class ActiveSessionNotifier extends StateNotifier<ActiveSessionState> {
   final SetLogsRepository _logsRepo;
   ActiveSessionNotifier(this._logsRepo) : super(ActiveSessionState(exercises: []));
+
+  void clearSession() => state = ActiveSessionState(exercises: []);
+
+  void lockIntoRestMode() => state = state.copyWith(exercises: [], isRestMode: true);
 
   void addSet(int exIdx) {
     final s = state.exercises[exIdx];
@@ -70,7 +78,7 @@ class ActiveSessionNotifier extends StateNotifier<ActiveSessionState> {
   void loadDailyContext(List<ExerciseSession> dailyExercises) {
     if (state.exercises.isNotEmpty && dailyExercises.isNotEmpty && 
         state.exercises.map((e) => e.exercise.id).join(',') == dailyExercises.map((e) => e.exercise.id).join(',')) return;
-    state = state.copyWith(exercises: dailyExercises);
+    state = state.copyWith(exercises: dailyExercises, isRestMode: false);
   }
 }
 
@@ -90,15 +98,35 @@ class RestTimerNotifier extends StateNotifier<int> {
 
 final restTimerProvider = StateNotifierProvider<RestTimerNotifier, int>((ref) => RestTimerNotifier());
 
+final bypassSameDayWorkoutProvider = StateProvider<bool>((ref) => false);
+
 final workoutSessionLoaderProvider = FutureProvider<void>((ref) async {
   final engine = ref.watch(loopEngineProvider), db = ref.watch(databaseProvider), logsRepo = ref.watch(setLogsRepositoryProvider);
-  final routine = await engine.getActiveRoutine(), template = routine != null ? await engine.getTodayTemplate(routine) : null;
-  if (template == null) return;
+  final bypass = ref.watch(bypassSameDayWorkoutProvider);
+
+  if (!bypass) {
+    final alreadyWorkedOutToday = await logsRepo.hasCompletedSessionToday();
+    if (alreadyWorkedOutToday) {
+      ref.read(activeSessionProvider.notifier).lockIntoRestMode();
+      return; 
+    }
+  }
+
+  final routine = await engine.getActiveRoutine();
+  if (routine == null) {
+    ref.read(activeSessionProvider.notifier).clearSession();
+    return;
+  }
+  
+  final template = await engine.getTodayTemplate(routine);
+  if (template == null) {
+    ref.read(activeSessionProvider.notifier).clearSession();
+    return;
+  }
   
   final results = await (db.select(db.workoutExercises).join([drift.innerJoin(db.exercises, db.exercises.id.equalsExp(db.workoutExercises.exerciseId))])
     ..where(db.workoutExercises.workoutTemplateId.equals(template.id))..orderBy([drift.OrderingTerm.asc(db.workoutExercises.displayOrder)])).get();
-  if (results.isEmpty) return;
-
+  
   List<ExerciseSession> dailyExercises = [];
   for (var row in results) {
     final ex = row.readTable(db.exercises), today = await logsRepo.getLogsForExerciseToday(ex.id), past = await logsRepo.getPastSessionLogs(ex.id);
@@ -109,5 +137,6 @@ final workoutSessionLoaderProvider = FutureProvider<void>((ref) async {
 
     dailyExercises.add(ExerciseSession(exercise: ex, sets: [...restored, ActiveSet(previousWeight: past.isNotEmpty ? past.last.weight : null, previousReps: past.isNotEmpty ? past.last.reps : null)]));
   }
+  
   ref.read(activeSessionProvider.notifier).loadDailyContext(dailyExercises);
 });

@@ -88,7 +88,7 @@ class SetLogRow extends ConsumerWidget {
                       final wasCompleted = activeSet.isCompleted;
                       await ref.read(activeSessionProvider.notifier).toggleSetLogging(exerciseIndex, setIndex);
                       if (!wasCompleted) {
-                        ref.read(restTimerProvider.notifier).startTimer(90);
+                        ref.read(restTimerProvider.notifier).startTimer(5);
                       }
                     },
             ),
