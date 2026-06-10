@@ -1,3 +1,5 @@
+// Location: C:\Development\batak\lib\core\state\workout_state.dart
+
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
@@ -128,14 +130,54 @@ final workoutSessionLoaderProvider = FutureProvider<void>((ref) async {
     ..where(db.workoutExercises.workoutTemplateId.equals(template.id))..orderBy([drift.OrderingTerm.asc(db.workoutExercises.displayOrder)])).get();
   
   List<ExerciseSession> dailyExercises = [];
+  
   for (var row in results) {
-    final ex = row.readTable(db.exercises), today = await logsRepo.getLogsForExerciseToday(ex.id), past = await logsRepo.getPastSessionLogs(ex.id);
+    final ex = row.readTable(db.exercises);
+    final today = await logsRepo.getLogsForExerciseToday(ex.id);
     
-    final restored = today.isNotEmpty 
-      ? List.generate(today.length, (i) => ActiveSet(weight: today[i].weight, reps: today[i].reps, isCompleted: true, tag: today[i].setTag, logId: today[i].id, previousWeight: i < past.length ? past[i].weight : null, previousReps: i < past.length ? past[i].reps : null))
-      : past.map((p) => ActiveSet(previousWeight: p.weight, previousReps: p.reps)).toList();
+    final lastLog = await (db.select(db.setLogs)
+          ..where((tbl) => tbl.exerciseId.equals(ex.id))
+          ..orderBy([(tbl) => drift.OrderingTerm.desc(tbl.timestamp)])
+          ..limit(1))
+        .getSingleOrNull();
 
-    dailyExercises.add(ExerciseSession(exercise: ex, sets: [...restored, ActiveSet(previousWeight: past.isNotEmpty ? past.last.weight : null, previousReps: past.isNotEmpty ? past.last.reps : null)]));
+    List<SetLog> past = [];
+    if (lastLog != null) {
+      past = await (db.select(db.setLogs)
+            // FIXED: Added '?? 0' to enforce a non-nullable int pass
+            ..where((tbl) => tbl.exerciseId.equals(ex.id) & tbl.sessionId.equals(lastLog.sessionId ?? 0))
+            ..orderBy([(tbl) => drift.OrderingTerm.asc(tbl.timestamp)]))
+          .get();
+    }
+
+    List<ActiveSet> sessionSets = [];
+
+    if (today.isNotEmpty) {
+      sessionSets = List.generate(today.length, (i) {
+        return ActiveSet(
+          weight: today[i].weight, reps: today[i].reps, isCompleted: true, 
+          tag: today[i].setTag, logId: today[i].id, 
+          previousWeight: i < past.length ? past[i].weight : null, previousReps: i < past.length ? past[i].reps : null
+        );
+      });
+      sessionSets.add(ActiveSet(
+        previousWeight: past.isNotEmpty ? past.last.weight : null, previousReps: past.isNotEmpty ? past.last.reps : null
+      ));
+    } else {
+      if (past.isNotEmpty) {
+        sessionSets = past.map((p) => ActiveSet(
+          weight: p.weight, 
+          reps: p.reps,     
+          previousWeight: p.weight,
+          previousReps: p.reps,
+          isCompleted: false 
+        )).toList();
+      } else {
+        sessionSets = [ActiveSet()];
+      }
+    }
+
+    dailyExercises.add(ExerciseSession(exercise: ex, sets: sessionSets));
   }
   
   ref.read(activeSessionProvider.notifier).loadDailyContext(dailyExercises);

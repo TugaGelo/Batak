@@ -1,3 +1,5 @@
+// Location: C:\Development\batak\lib\core\state\history_state.dart
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_body_heatmap/flutter_body_heatmap.dart';
@@ -122,4 +124,21 @@ final heatmapDataProvider = FutureProvider.autoDispose<Map<Muscle, MuscleData>>(
   }
 
   return heatmapMap;
+});
+
+final lastPerformedSetsProvider = FutureProvider.family.autoDispose<List<SetLog>, int>((ref, exerciseId) async {
+  final db = ref.watch(databaseProvider);
+  final mostRecentLog = await (db.select(db.setLogs)
+        ..where((tbl) => tbl.exerciseId.equals(exerciseId))
+        ..orderBy([(tbl) => drift.OrderingTerm.desc(tbl.timestamp)])
+        ..limit(1))
+      .getSingleOrNull();
+
+  if (mostRecentLog == null) return []; 
+
+  return await (db.select(db.setLogs)
+        // FIXED: Added '?? 0' to enforce a non-nullable int pass
+        ..where((tbl) => tbl.exerciseId.equals(exerciseId) & tbl.sessionId.equals(mostRecentLog.sessionId ?? 0))
+        ..orderBy([(tbl) => drift.OrderingTerm.asc(tbl.timestamp)]))
+      .get();
 });
