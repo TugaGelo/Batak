@@ -21,7 +21,13 @@ final availableExercisesProvider = FutureProvider.autoDispose<List<Exercise>>((r
 
 class ExerciseSelectionSheet extends ConsumerStatefulWidget {
   final Function(Exercise) onSelect;
-  const ExerciseSelectionSheet({super.key, required this.onSelect});
+  final List<int> excludedExerciseIds;
+
+  const ExerciseSelectionSheet({
+    super.key, 
+    required this.onSelect,
+    this.excludedExerciseIds = const [],
+  });
 
   @override
   ConsumerState<ExerciseSelectionSheet> createState() => _ExerciseSelectionSheetState();
@@ -81,17 +87,25 @@ class _ExerciseSelectionSheetState extends ConsumerState<ExerciseSelectionSheet>
               error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.redAccent))),
               data: (exercises) {
                 final filteredExercises = exercises.where((ex) => ex.name.toLowerCase().contains(_searchQuery)).toList();
+                
                 return ListView.separated(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 40),
                   itemCount: filteredExercises.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final ex = filteredExercises[index];
-                    return ExerciseSheetRow(
-                      exercise: ex,
-                      onTap: () {
-                        widget.onSelect(ex); 
-                      },
+                    
+                    final isAlreadyAdded = widget.excludedExerciseIds.contains(ex.id);
+
+                    return IgnorePointer(
+                      ignoring: isAlreadyAdded,
+                      child: Opacity(
+                        opacity: isAlreadyAdded ? 0.35 : 1.0,
+                        child: ExerciseSheetRow(
+                          exercise: ex,
+                          onTap: () => widget.onSelect(ex),
+                        ),
+                      ),
                     );
                   },
                 );

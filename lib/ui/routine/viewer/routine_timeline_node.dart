@@ -27,6 +27,15 @@ class RoutineTimelineNode extends ConsumerWidget {
     final cardBorder = isCurrent ? const Color(0xFFE1C19F) : Colors.transparent;
     final cardBg = isCompleted ? const Color(0xFF1F1F1F).withOpacity(0.5) : const Color(0xFF1F1F1F);
 
+    IconData nodeIcon;
+    if (exercises.isEmpty) {
+      nodeIcon = Icons.bedtime; 
+    } else if (isCompleted) {
+      nodeIcon = Icons.check_circle;
+    } else {
+      nodeIcon = Icons.fitness_center;
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 24.0),
       child: Row(
@@ -42,7 +51,7 @@ class RoutineTimelineNode extends ConsumerWidget {
               boxShadow: isCurrent ? [const BoxShadow(color: Color(0x33E1C19F), blurRadius: 12)] : [],
             ),
             child: Icon(
-              isCompleted ? Icons.check_circle : Icons.fitness_center,
+              nodeIcon, 
               color: iconColor,
             ),
           ),
@@ -57,13 +66,14 @@ class RoutineTimelineNode extends ConsumerWidget {
                   color: cardBg,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: cardBorder, width: isCurrent ? 1.5 : 0),
+                  // FIXED: Changed Color(0x330000 black) back to clean hex Color(0x33000000)
                   boxShadow: isCurrent ? [const BoxShadow(color: Color(0x33000000), blurRadius: 20, offset: Offset(0, 8))] : [],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Day $dayNumber • ${isCompleted ? 'COMPLETED' : isCurrent ? 'ACTIVE' : 'UPCOMING'}",
+                      "Day $dayNumber • ${exercises.isEmpty ? 'REST SYSTEM' : isCompleted ? 'COMPLETED' : isCurrent ? 'ACTIVE' : 'UPCOMING'}",
                       style: TextStyle(
                         color: isCurrent ? const Color(0xFFE1C19F) : const Color(0xFF949187),
                         fontSize: 10,
@@ -115,6 +125,12 @@ class RoutineTimelineNode extends ConsumerWidget {
                           ),
                         ),
                       )),
+                    ] else ...[
+                      const SizedBox(height: 12),
+                      const Text(
+                        "No specific training movements cataloged for this block sequence loop.",
+                        style: TextStyle(color: Color(0xFF949187), fontSize: 12, height: 1.4),
+                      ),
                     ],
                   ],
                 ),

@@ -84,11 +84,14 @@ class _RoutineComposerState extends ConsumerState<RoutineComposer> {
   }
 
   void _openExerciseSelector(int dayIndex) {
+    final existingIds = _draftDays[dayIndex].exercises.map((e) => e.id).toList();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => ExerciseSelectionSheet(
+        excludedExerciseIds: existingIds,
         onSelect: (ex) => setState(() => _draftDays[dayIndex].exercises = [..._draftDays[dayIndex].exercises, ex]),
       ),
     );
