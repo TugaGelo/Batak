@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/state/workout_state.dart';
+import '../../core/state/history_state.dart';
 import '../../core/database/set_logs_repository.dart';
 import '../../core/loop/loop_engine.dart';
 import '../routine/routine_screen.dart';
@@ -38,6 +39,8 @@ class FinishWorkoutButton extends ConsumerWidget {
           
           ref.invalidate(routineDataProvider);
           ref.invalidate(workoutSessionLoaderProvider);
+          ref.invalidate(historyTimelineProvider);
+          ref.invalidate(heatmapDataProvider);
 
           if (!context.mounted) return;
 
