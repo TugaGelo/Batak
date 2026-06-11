@@ -93,6 +93,11 @@ class _RoutineComposerState extends ConsumerState<RoutineComposer> {
       builder: (context) => ExerciseSelectionSheet(
         excludedExerciseIds: existingIds,
         onSelect: (ex) => setState(() => _draftDays[dayIndex].exercises = [..._draftDays[dayIndex].exercises, ex]),
+        onRemove: (ex) {
+           setState(() {
+              _draftDays[dayIndex].exercises.removeWhere((e) => e.id == ex.id);
+           });
+        },
       ),
     );
   }

@@ -1,5 +1,3 @@
-// Location: C:\Development\batak\lib\core\state\history_state.dart
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_body_heatmap/flutter_body_heatmap.dart';
@@ -82,7 +80,7 @@ final heatmapDataProvider = FutureProvider.autoDispose<Map<Muscle, MuscleData>>(
     final ex = row.readTable(db.exercises);
     final volume = log.weight * log.reps;
 
-    final search = "${ex.name} ${ex.vectorId}".toLowerCase();
+    final search = "${ex.name} ${ex.target}".toLowerCase();
     List<Muscle> hitMuscles = [];
 
     if (search.contains('bench') || search.contains('chest') || search.contains('pec')) { hitMuscles.addAll([Muscle.chest, Muscle.triceps]); }
@@ -98,7 +96,7 @@ final heatmapDataProvider = FutureProvider.autoDispose<Map<Muscle, MuscleData>>(
     if (search.contains('abs') || search.contains('core') || search.contains('crunch')) { hitMuscles.add(Muscle.abs); }
 
     if (hitMuscles.isEmpty) {
-      final scrubbedId = ex.vectorId.toLowerCase().trim().replaceAll('-', '').replaceAll('_', '');
+      final scrubbedId = ex.target.toLowerCase().trim().replaceAll('-', '').replaceAll('_', '');
       for (var m in Muscle.values) {
         if (m.name.toLowerCase() == scrubbedId) {
           hitMuscles.add(m);
@@ -137,7 +135,6 @@ final lastPerformedSetsProvider = FutureProvider.family.autoDispose<List<SetLog>
   if (mostRecentLog == null) return []; 
 
   return await (db.select(db.setLogs)
-        // FIXED: Added '?? 0' to enforce a non-nullable int pass
         ..where((tbl) => tbl.exerciseId.equals(exerciseId) & tbl.sessionId.equals(mostRecentLog.sessionId ?? 0))
         ..orderBy([(tbl) => drift.OrderingTerm.asc(tbl.timestamp)]))
       .get();

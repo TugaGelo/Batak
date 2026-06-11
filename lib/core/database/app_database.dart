@@ -20,8 +20,12 @@ class WorkoutTemplates extends Table {
 class Exercises extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
-  TextColumn get stickyNote => text().nullable()();
-  TextColumn get vectorId => text()(); 
+  
+  TextColumn get bodyPart => text()();    
+  TextColumn get equipment => text()();   
+  TextColumn get target => text()();      
+  TextColumn get gifUrl => text()();      
+  TextColumn get instructions => text()(); 
 }
 
 class WorkoutSessions extends Table {

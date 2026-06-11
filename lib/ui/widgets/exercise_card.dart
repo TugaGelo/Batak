@@ -53,7 +53,7 @@ class ExerciseCard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      exercise.vectorId.toUpperCase(),
+                      exercise.target.toUpperCase(),
                       style: const TextStyle(
                         color: Color(0xFFE1DCC9),
                         fontSize: 10,

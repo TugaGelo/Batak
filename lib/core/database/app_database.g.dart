@@ -590,30 +590,67 @@ class $ExercisesTable extends Exercises
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _stickyNoteMeta = const VerificationMeta(
-    'stickyNote',
+  static const VerificationMeta _bodyPartMeta = const VerificationMeta(
+    'bodyPart',
   );
   @override
-  late final GeneratedColumn<String> stickyNote = GeneratedColumn<String>(
-    'sticky_note',
+  late final GeneratedColumn<String> bodyPart = GeneratedColumn<String>(
+    'body_part',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
-  static const VerificationMeta _vectorIdMeta = const VerificationMeta(
-    'vectorId',
+  static const VerificationMeta _equipmentMeta = const VerificationMeta(
+    'equipment',
   );
   @override
-  late final GeneratedColumn<String> vectorId = GeneratedColumn<String>(
-    'vector_id',
+  late final GeneratedColumn<String> equipment = GeneratedColumn<String>(
+    'equipment',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<String> target = GeneratedColumn<String>(
+    'target',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _gifUrlMeta = const VerificationMeta('gifUrl');
+  @override
+  late final GeneratedColumn<String> gifUrl = GeneratedColumn<String>(
+    'gif_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _instructionsMeta = const VerificationMeta(
+    'instructions',
+  );
+  @override
+  late final GeneratedColumn<String> instructions = GeneratedColumn<String>(
+    'instructions',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, stickyNote, vectorId];
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    bodyPart,
+    equipment,
+    target,
+    gifUrl,
+    instructions,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -637,19 +674,48 @@ class $ExercisesTable extends Exercises
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('sticky_note')) {
+    if (data.containsKey('body_part')) {
       context.handle(
-        _stickyNoteMeta,
-        stickyNote.isAcceptableOrUnknown(data['sticky_note']!, _stickyNoteMeta),
-      );
-    }
-    if (data.containsKey('vector_id')) {
-      context.handle(
-        _vectorIdMeta,
-        vectorId.isAcceptableOrUnknown(data['vector_id']!, _vectorIdMeta),
+        _bodyPartMeta,
+        bodyPart.isAcceptableOrUnknown(data['body_part']!, _bodyPartMeta),
       );
     } else if (isInserting) {
-      context.missing(_vectorIdMeta);
+      context.missing(_bodyPartMeta);
+    }
+    if (data.containsKey('equipment')) {
+      context.handle(
+        _equipmentMeta,
+        equipment.isAcceptableOrUnknown(data['equipment']!, _equipmentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_equipmentMeta);
+    }
+    if (data.containsKey('target')) {
+      context.handle(
+        _targetMeta,
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetMeta);
+    }
+    if (data.containsKey('gif_url')) {
+      context.handle(
+        _gifUrlMeta,
+        gifUrl.isAcceptableOrUnknown(data['gif_url']!, _gifUrlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_gifUrlMeta);
+    }
+    if (data.containsKey('instructions')) {
+      context.handle(
+        _instructionsMeta,
+        instructions.isAcceptableOrUnknown(
+          data['instructions']!,
+          _instructionsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_instructionsMeta);
     }
     return context;
   }
@@ -668,13 +734,25 @@ class $ExercisesTable extends Exercises
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      stickyNote: attachedDatabase.typeMapping.read(
+      bodyPart: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}sticky_note'],
-      ),
-      vectorId: attachedDatabase.typeMapping.read(
+        data['${effectivePrefix}body_part'],
+      )!,
+      equipment: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}vector_id'],
+        data['${effectivePrefix}equipment'],
+      )!,
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target'],
+      )!,
+      gifUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}gif_url'],
+      )!,
+      instructions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}instructions'],
       )!,
     );
   }
@@ -688,23 +766,30 @@ class $ExercisesTable extends Exercises
 class Exercise extends DataClass implements Insertable<Exercise> {
   final int id;
   final String name;
-  final String? stickyNote;
-  final String vectorId;
+  final String bodyPart;
+  final String equipment;
+  final String target;
+  final String gifUrl;
+  final String instructions;
   const Exercise({
     required this.id,
     required this.name,
-    this.stickyNote,
-    required this.vectorId,
+    required this.bodyPart,
+    required this.equipment,
+    required this.target,
+    required this.gifUrl,
+    required this.instructions,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    if (!nullToAbsent || stickyNote != null) {
-      map['sticky_note'] = Variable<String>(stickyNote);
-    }
-    map['vector_id'] = Variable<String>(vectorId);
+    map['body_part'] = Variable<String>(bodyPart);
+    map['equipment'] = Variable<String>(equipment);
+    map['target'] = Variable<String>(target);
+    map['gif_url'] = Variable<String>(gifUrl);
+    map['instructions'] = Variable<String>(instructions);
     return map;
   }
 
@@ -712,10 +797,11 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     return ExercisesCompanion(
       id: Value(id),
       name: Value(name),
-      stickyNote: stickyNote == null && nullToAbsent
-          ? const Value.absent()
-          : Value(stickyNote),
-      vectorId: Value(vectorId),
+      bodyPart: Value(bodyPart),
+      equipment: Value(equipment),
+      target: Value(target),
+      gifUrl: Value(gifUrl),
+      instructions: Value(instructions),
     );
   }
 
@@ -727,8 +813,11 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     return Exercise(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      stickyNote: serializer.fromJson<String?>(json['stickyNote']),
-      vectorId: serializer.fromJson<String>(json['vectorId']),
+      bodyPart: serializer.fromJson<String>(json['bodyPart']),
+      equipment: serializer.fromJson<String>(json['equipment']),
+      target: serializer.fromJson<String>(json['target']),
+      gifUrl: serializer.fromJson<String>(json['gifUrl']),
+      instructions: serializer.fromJson<String>(json['instructions']),
     );
   }
   @override
@@ -737,30 +826,42 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'stickyNote': serializer.toJson<String?>(stickyNote),
-      'vectorId': serializer.toJson<String>(vectorId),
+      'bodyPart': serializer.toJson<String>(bodyPart),
+      'equipment': serializer.toJson<String>(equipment),
+      'target': serializer.toJson<String>(target),
+      'gifUrl': serializer.toJson<String>(gifUrl),
+      'instructions': serializer.toJson<String>(instructions),
     };
   }
 
   Exercise copyWith({
     int? id,
     String? name,
-    Value<String?> stickyNote = const Value.absent(),
-    String? vectorId,
+    String? bodyPart,
+    String? equipment,
+    String? target,
+    String? gifUrl,
+    String? instructions,
   }) => Exercise(
     id: id ?? this.id,
     name: name ?? this.name,
-    stickyNote: stickyNote.present ? stickyNote.value : this.stickyNote,
-    vectorId: vectorId ?? this.vectorId,
+    bodyPart: bodyPart ?? this.bodyPart,
+    equipment: equipment ?? this.equipment,
+    target: target ?? this.target,
+    gifUrl: gifUrl ?? this.gifUrl,
+    instructions: instructions ?? this.instructions,
   );
   Exercise copyWithCompanion(ExercisesCompanion data) {
     return Exercise(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      stickyNote: data.stickyNote.present
-          ? data.stickyNote.value
-          : this.stickyNote,
-      vectorId: data.vectorId.present ? data.vectorId.value : this.vectorId,
+      bodyPart: data.bodyPart.present ? data.bodyPart.value : this.bodyPart,
+      equipment: data.equipment.present ? data.equipment.value : this.equipment,
+      target: data.target.present ? data.target.value : this.target,
+      gifUrl: data.gifUrl.present ? data.gifUrl.value : this.gifUrl,
+      instructions: data.instructions.present
+          ? data.instructions.value
+          : this.instructions,
     );
   }
 
@@ -769,67 +870,99 @@ class Exercise extends DataClass implements Insertable<Exercise> {
     return (StringBuffer('Exercise(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('stickyNote: $stickyNote, ')
-          ..write('vectorId: $vectorId')
+          ..write('bodyPart: $bodyPart, ')
+          ..write('equipment: $equipment, ')
+          ..write('target: $target, ')
+          ..write('gifUrl: $gifUrl, ')
+          ..write('instructions: $instructions')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, stickyNote, vectorId);
+  int get hashCode =>
+      Object.hash(id, name, bodyPart, equipment, target, gifUrl, instructions);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Exercise &&
           other.id == this.id &&
           other.name == this.name &&
-          other.stickyNote == this.stickyNote &&
-          other.vectorId == this.vectorId);
+          other.bodyPart == this.bodyPart &&
+          other.equipment == this.equipment &&
+          other.target == this.target &&
+          other.gifUrl == this.gifUrl &&
+          other.instructions == this.instructions);
 }
 
 class ExercisesCompanion extends UpdateCompanion<Exercise> {
   final Value<int> id;
   final Value<String> name;
-  final Value<String?> stickyNote;
-  final Value<String> vectorId;
+  final Value<String> bodyPart;
+  final Value<String> equipment;
+  final Value<String> target;
+  final Value<String> gifUrl;
+  final Value<String> instructions;
   const ExercisesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.stickyNote = const Value.absent(),
-    this.vectorId = const Value.absent(),
+    this.bodyPart = const Value.absent(),
+    this.equipment = const Value.absent(),
+    this.target = const Value.absent(),
+    this.gifUrl = const Value.absent(),
+    this.instructions = const Value.absent(),
   });
   ExercisesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    this.stickyNote = const Value.absent(),
-    required String vectorId,
+    required String bodyPart,
+    required String equipment,
+    required String target,
+    required String gifUrl,
+    required String instructions,
   }) : name = Value(name),
-       vectorId = Value(vectorId);
+       bodyPart = Value(bodyPart),
+       equipment = Value(equipment),
+       target = Value(target),
+       gifUrl = Value(gifUrl),
+       instructions = Value(instructions);
   static Insertable<Exercise> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<String>? stickyNote,
-    Expression<String>? vectorId,
+    Expression<String>? bodyPart,
+    Expression<String>? equipment,
+    Expression<String>? target,
+    Expression<String>? gifUrl,
+    Expression<String>? instructions,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (stickyNote != null) 'sticky_note': stickyNote,
-      if (vectorId != null) 'vector_id': vectorId,
+      if (bodyPart != null) 'body_part': bodyPart,
+      if (equipment != null) 'equipment': equipment,
+      if (target != null) 'target': target,
+      if (gifUrl != null) 'gif_url': gifUrl,
+      if (instructions != null) 'instructions': instructions,
     });
   }
 
   ExercisesCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<String?>? stickyNote,
-    Value<String>? vectorId,
+    Value<String>? bodyPart,
+    Value<String>? equipment,
+    Value<String>? target,
+    Value<String>? gifUrl,
+    Value<String>? instructions,
   }) {
     return ExercisesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      stickyNote: stickyNote ?? this.stickyNote,
-      vectorId: vectorId ?? this.vectorId,
+      bodyPart: bodyPart ?? this.bodyPart,
+      equipment: equipment ?? this.equipment,
+      target: target ?? this.target,
+      gifUrl: gifUrl ?? this.gifUrl,
+      instructions: instructions ?? this.instructions,
     );
   }
 
@@ -842,11 +975,20 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (stickyNote.present) {
-      map['sticky_note'] = Variable<String>(stickyNote.value);
+    if (bodyPart.present) {
+      map['body_part'] = Variable<String>(bodyPart.value);
     }
-    if (vectorId.present) {
-      map['vector_id'] = Variable<String>(vectorId.value);
+    if (equipment.present) {
+      map['equipment'] = Variable<String>(equipment.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<String>(target.value);
+    }
+    if (gifUrl.present) {
+      map['gif_url'] = Variable<String>(gifUrl.value);
+    }
+    if (instructions.present) {
+      map['instructions'] = Variable<String>(instructions.value);
     }
     return map;
   }
@@ -856,8 +998,11 @@ class ExercisesCompanion extends UpdateCompanion<Exercise> {
     return (StringBuffer('ExercisesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('stickyNote: $stickyNote, ')
-          ..write('vectorId: $vectorId')
+          ..write('bodyPart: $bodyPart, ')
+          ..write('equipment: $equipment, ')
+          ..write('target: $target, ')
+          ..write('gifUrl: $gifUrl, ')
+          ..write('instructions: $instructions')
           ..write(')'))
         .toString();
   }
@@ -2776,15 +2921,21 @@ typedef $$ExercisesTableCreateCompanionBuilder =
     ExercisesCompanion Function({
       Value<int> id,
       required String name,
-      Value<String?> stickyNote,
-      required String vectorId,
+      required String bodyPart,
+      required String equipment,
+      required String target,
+      required String gifUrl,
+      required String instructions,
     });
 typedef $$ExercisesTableUpdateCompanionBuilder =
     ExercisesCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<String?> stickyNote,
-      Value<String> vectorId,
+      Value<String> bodyPart,
+      Value<String> equipment,
+      Value<String> target,
+      Value<String> gifUrl,
+      Value<String> instructions,
     });
 
 final class $$ExercisesTableReferences
@@ -2853,13 +3004,28 @@ class $$ExercisesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get stickyNote => $composableBuilder(
-    column: $table.stickyNote,
+  ColumnFilters<String> get bodyPart => $composableBuilder(
+    column: $table.bodyPart,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get vectorId => $composableBuilder(
-    column: $table.vectorId,
+  ColumnFilters<String> get equipment => $composableBuilder(
+    column: $table.equipment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get gifUrl => $composableBuilder(
+    column: $table.gifUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get instructions => $composableBuilder(
+    column: $table.instructions,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2933,13 +3099,28 @@ class $$ExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get stickyNote => $composableBuilder(
-    column: $table.stickyNote,
+  ColumnOrderings<String> get bodyPart => $composableBuilder(
+    column: $table.bodyPart,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get vectorId => $composableBuilder(
-    column: $table.vectorId,
+  ColumnOrderings<String> get equipment => $composableBuilder(
+    column: $table.equipment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get gifUrl => $composableBuilder(
+    column: $table.gifUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get instructions => $composableBuilder(
+    column: $table.instructions,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -2959,13 +3140,22 @@ class $$ExercisesTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<String> get stickyNote => $composableBuilder(
-    column: $table.stickyNote,
+  GeneratedColumn<String> get bodyPart =>
+      $composableBuilder(column: $table.bodyPart, builder: (column) => column);
+
+  GeneratedColumn<String> get equipment =>
+      $composableBuilder(column: $table.equipment, builder: (column) => column);
+
+  GeneratedColumn<String> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
+
+  GeneratedColumn<String> get gifUrl =>
+      $composableBuilder(column: $table.gifUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get instructions => $composableBuilder(
+    column: $table.instructions,
     builder: (column) => column,
   );
-
-  GeneratedColumn<String> get vectorId =>
-      $composableBuilder(column: $table.vectorId, builder: (column) => column);
 
   Expression<T> setLogsRefs<T extends Object>(
     Expression<T> Function($$SetLogsTableAnnotationComposer a) f,
@@ -3048,25 +3238,37 @@ class $$ExercisesTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<String?> stickyNote = const Value.absent(),
-                Value<String> vectorId = const Value.absent(),
+                Value<String> bodyPart = const Value.absent(),
+                Value<String> equipment = const Value.absent(),
+                Value<String> target = const Value.absent(),
+                Value<String> gifUrl = const Value.absent(),
+                Value<String> instructions = const Value.absent(),
               }) => ExercisesCompanion(
                 id: id,
                 name: name,
-                stickyNote: stickyNote,
-                vectorId: vectorId,
+                bodyPart: bodyPart,
+                equipment: equipment,
+                target: target,
+                gifUrl: gifUrl,
+                instructions: instructions,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
-                Value<String?> stickyNote = const Value.absent(),
-                required String vectorId,
+                required String bodyPart,
+                required String equipment,
+                required String target,
+                required String gifUrl,
+                required String instructions,
               }) => ExercisesCompanion.insert(
                 id: id,
                 name: name,
-                stickyNote: stickyNote,
-                vectorId: vectorId,
+                bodyPart: bodyPart,
+                equipment: equipment,
+                target: target,
+                gifUrl: gifUrl,
+                instructions: instructions,
               ),
           withReferenceMapper: (p0) => p0
               .map(
