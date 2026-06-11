@@ -1,5 +1,3 @@
-// Location: C:\Development\batak\lib\core\state\workout_state.dart
-
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
@@ -82,6 +80,34 @@ class ActiveSessionNotifier extends StateNotifier<ActiveSessionState> {
         state.exercises.map((e) => e.exercise.id).join(',') == dailyExercises.map((e) => e.exercise.id).join(',')) return;
     state = state.copyWith(exercises: dailyExercises, isRestMode: false);
   }
+
+  void executeAiSwap(int exerciseIndex, Exercise newExercise, double Function(double) weightTranslator) {
+    if (exerciseIndex < 0 || exerciseIndex >= state.exercises.length) return;
+
+    final oldSession = state.exercises[exerciseIndex];
+    
+    final translatedSets = oldSession.sets.map((oldSet) {
+      double? newWeight;
+      double? newPrevWeight;
+
+      if (oldSet.weight != null) newWeight = weightTranslator(oldSet.weight!);
+      if (oldSet.previousWeight != null) newPrevWeight = weightTranslator(oldSet.previousWeight!);
+
+      return oldSet.copyWith(
+        weight: newWeight,
+        previousWeight: newPrevWeight,
+      );
+    }).toList();
+
+    final updatedSession = ExerciseSession(
+      exercise: newExercise,
+      sets: translatedSets,
+    );
+
+    state = state.copyWith(
+      exercises: [...state.exercises]..[exerciseIndex] = updatedSession,
+    );
+  }
 }
 
 final activeSessionProvider = StateNotifierProvider<ActiveSessionNotifier, ActiveSessionState>((ref) => ActiveSessionNotifier(ref.watch(setLogsRepositoryProvider)));
@@ -144,7 +170,6 @@ final workoutSessionLoaderProvider = FutureProvider<void>((ref) async {
     List<SetLog> past = [];
     if (lastLog != null) {
       past = await (db.select(db.setLogs)
-            // FIXED: Added '?? 0' to enforce a non-nullable int pass
             ..where((tbl) => tbl.exerciseId.equals(ex.id) & tbl.sessionId.equals(lastLog.sessionId ?? 0))
             ..orderBy([(tbl) => drift.OrderingTerm.asc(tbl.timestamp)]))
           .get();

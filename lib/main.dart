@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:batak/core/ai/ai_swapper_service.dart';
 import 'package:batak/core/loop/loop_engine.dart';
 import 'package:batak/ui/shell/app_shell.dart';
 
@@ -8,9 +7,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   final container = ProviderContainer();
-  
-  final aiService = container.read(aiSwapperProvider);
-  await aiService.initialize();
 
   final loopEngine = container.read(loopEngineProvider);
   await loopEngine.seedDummyRoutineIfEmpty();
