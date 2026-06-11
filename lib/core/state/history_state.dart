@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_body_heatmap/flutter_body_heatmap.dart';
 import '../database/app_database.dart';
+import '../database/set_logs_repository.dart';
 
 class ArchivedExercise {
   final String exerciseName;
@@ -138,4 +139,14 @@ final lastPerformedSetsProvider = FutureProvider.family.autoDispose<List<SetLog>
         ..where((tbl) => tbl.exerciseId.equals(exerciseId) & tbl.sessionId.equals(mostRecentLog.sessionId ?? 0))
         ..orderBy([(tbl) => drift.OrderingTerm.asc(tbl.timestamp)]))
       .get();
+});
+
+final consistencyHeatmapProvider = FutureProvider.autoDispose<Map<DateTime, int>>((ref) async {
+  final repo = ref.watch(setLogsRepositoryProvider);
+  return await repo.getSetCountsLast28Days();
+});
+
+final volumeRadarProvider = FutureProvider.autoDispose<Map<String, double>>((ref) async {
+  final repo = ref.watch(setLogsRepositoryProvider);
+  return await repo.getVolumeByMuscleLast7Days();
 });

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../workout_floor.dart';
 import '../routine/routine_screen.dart';
 import '../analytics/analytics_screen.dart';
+import '../widgets/global_streak_badge.dart';
 
 final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
 
@@ -34,7 +35,14 @@ class _BatakShellState extends ConsumerState<BatakShell> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BATAK'),
+        centerTitle: false,
+        title: const Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: Text('BATAK'),
+        ),
+        actions: const [
+          GlobalStreakBadge(),
+        ],
       ),
       body: PageView(
         controller: _pageController,

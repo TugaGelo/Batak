@@ -105,6 +105,56 @@ class SetLogsRepository {
 
     return sessionId;
   }
+
+  Future<Map<DateTime, int>> getSetCountsLast28Days() async {
+    final now = DateTime.now();
+    final twentyEightDaysAgo = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 27));
+
+    final logs = await (_db.select(_db.setLogs)
+          ..where((tbl) => tbl.timestamp.isBiggerOrEqualValue(twentyEightDaysAgo)))
+        .get();
+
+    Map<DateTime, int> dayCounts = {};
+    for (var log in logs) {
+      final day = DateTime(log.timestamp.year, log.timestamp.month, log.timestamp.day);
+      dayCounts[day] = (dayCounts[day] ?? 0) + 1;
+    }
+    return dayCounts;
+  }
+
+  Future<Map<String, double>> getVolumeByMuscleLast7Days() async {
+    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+
+    final query = _db.select(_db.setLogs).join([
+      drift.innerJoin(_db.exercises, _db.exercises.id.equalsExp(_db.setLogs.exerciseId)),
+    ])..where(_db.setLogs.timestamp.isBiggerOrEqualValue(sevenDaysAgo));
+
+    final results = await query.get();
+    Map<String, double> volumeMap = {};
+
+    for (final row in results) {
+      final log = row.readTable(_db.setLogs);
+      final ex = row.readTable(_db.exercises);
+      
+      final volume = log.weight * log.reps;
+      
+      String radarCategory = _mapTargetToRadarAxis(ex.target);
+      volumeMap[radarCategory] = (volumeMap[radarCategory] ?? 0) + volume;
+    }
+
+    return volumeMap;
+  }
+
+  String _mapTargetToRadarAxis(String target) {
+    final t = target.toLowerCase();
+    if (t.contains('pectoral')) return 'Chest';
+    if (t.contains('deltoid') || t.contains('trap')) return 'Shoulders';
+    if (t.contains('bicep') || t.contains('tricep') || t.contains('forearm')) return 'Arms';
+    if (t.contains('glute')) return 'Glutes'; // NEW: Explicit Glute mapping
+    if (t.contains('quad') || t.contains('hamstring') || t.contains('calf')) return 'Legs';
+    if (t.contains('lats') || t.contains('back')) return 'Back';
+    return 'Core'; // Fallback for abs/waist
+  }
 }
 
 final setLogsRepositoryProvider = Provider<SetLogsRepository>((ref) {

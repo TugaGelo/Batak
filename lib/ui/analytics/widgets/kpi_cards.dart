@@ -1,105 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import '../../../core/state/history_state.dart';
 
-class VolumeKpiCard extends ConsumerWidget {
+class VolumeKpiCard extends StatelessWidget {
   const VolumeKpiCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final historyAsync = ref.watch(historyTimelineProvider);
-
-    double weeklyVolume = 0;
-    historyAsync.whenData((sessions) {
-      final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
-      for (var s in sessions) {
-        if (s.session.startTime.isAfter(sevenDaysAgo)) {
-          weeklyVolume += (s.session.volumeGenerated ?? 0);
-        }
-      }
-    });
-
-    final formattedVolume = NumberFormat('#,##0').format(weeklyVolume.toInt());
-
+  Widget build(BuildContext context) {
     return Container(
-      height: 120,
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF1F1F1F),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFF353535)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            "7-DAY VOLUME",
-            style: TextStyle(color: Color(0xFFE1C19F), fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                formattedVolume,
-                style: const TextStyle(color: Color(0xFFFEF8E5), fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(width: 4),
-              const Text(
-                "KGS",
-                style: TextStyle(color: Color(0xFFCAC6BB), fontSize: 12),
-              ),
-            ],
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFE1C19F).withOpacity(0.05),
+            blurRadius: 40,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-    );
-  }
-}
-
-class StreakKpiCard extends ConsumerWidget {
-  const StreakKpiCard({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final historyAsync = ref.watch(historyTimelineProvider);
-    
-    int totalSessions = 0;
-    historyAsync.whenData((sessions) => totalSessions = sessions.length);
-
-    return Container(
-      height: 120,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1F1F1F),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFF353535)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: const EdgeInsets.all(20),
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          const Text(
-            "TOTAL SESSIONS",
-            style: TextStyle(color: Color(0xFFE1C19F), fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.5),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text("🔥", style: TextStyle(fontSize: 20)),
-              const SizedBox(width: 8),
-              Text(
-                "$totalSessions",
-                style: const TextStyle(color: Color(0xFFFEF8E5), fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(width: 4),
               const Text(
-                "LOGGED",
-                style: TextStyle(color: Color(0xFFCAC6BB), fontSize: 12),
+                "7-DAY VOLUME",
+                style: TextStyle(color: Color(0xFFCAC6BB), fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 2.0),
               ),
+              const SizedBox(height: 8),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text("24,500", style: TextStyle(color: Color(0xFFFEF8E5), fontSize: 40, fontWeight: FontWeight.w800, letterSpacing: -1.0)),
+                  SizedBox(width: 8),
+                  Text("KGS", style: TextStyle(color: Color(0xFFCAC6BB), fontSize: 14, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF5B452B).withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.trending_up, color: Color(0xFFE1C19F), size: 16),
+                    SizedBox(width: 8),
+                    Text("+12% vs last week", style: TextStyle(color: Color(0xFFE1C19F), fontSize: 12, fontWeight: FontWeight.w600)),
+                  ],
+                ),
+              )
             ],
           ),
         ],
